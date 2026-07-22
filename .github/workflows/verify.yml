@@ -1,0 +1,17 @@
+name: Verify Task
+on: [push]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install harbor
+        run: |
+          source $HOME/.local/bin/env
+          uv tool install harbor --python 3.12
+      - name: Run oracle
+        run: |
+          source $HOME/.local/bin/env
+          harbor run -p . -a oracle
