@@ -1,20 +1,20 @@
-artifacts = ["/app/report.json"]
+artifacts = ["/app/perplexity_scores.json"]
 
 [task]
-name = "dynamo/log-report"
-description = "Parse an Apache-style access log into a small JSON summary report."
+name = "dynamo/perplexity-scorer"
+description = "Debug and fix a silently wrong perplexity scoring script for a small causal language model."
 
 [metadata]
-category = "data_processing_and_etl"
-subcategory = "text_processing"
-task_objective = ["transform", "generate"]
-artifact_type = ["text_or_log_file", "generated_output_artifact"]
-expert_time_estimate_hours = 0.3
+category = "machine_learning_and_ai"
+subcategory = "nlp_and_language_models"
+task_objective = ["debug", "fix", "validate"]
+artifact_type = ["single_script_or_program", "model_or_checkpoint", "mathematical_or_scientific_model", "generated_output_artifact"]
+expert_time_estimate_hours = 0.75
 model_tested = "GPT-5.4"
 agent_tested = "Terminus-2"
-difficulty_explanation = "Parse a small access log and emit summary stats: total requests, unique client IPs, and the single most-requested path."
-solution_explanation = "Read the log line by line, count total lines, track unique client IPs in a set, and tally request paths to find the most common one."
-verification_explanation = "Checks that /app/report.json is valid JSON and that total_requests, unique_ips, and top_path exactly match the values computed directly from the log file."
+difficulty_explanation = "The agent must identify a subtle off-by-one bug in a causal LM perplexity scorer, correct it, and produce the right scores for a small evaluation set."
+solution_explanation = "Inspect the scoring script, compare its output against the intended autoregressive LM behavior, reason about the token shift bug, and correct the implementation so it computes perplexity from the correct target token."
+verification_explanation = "Checks that /app/perplexity_scores.json exists and that each sequence score matches the reference values within the expected tolerance."
 
 [verifier]
 timeout_sec = 120.0
