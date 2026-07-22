@@ -1,10 +1,13 @@
 #!/bin/bash
-# pytest and pytest-json-ctrf are baked into environment/Dockerfile — no verify-time installs.
 set -uo pipefail
 mkdir -p /logs/verifier
 
-pytest /tests/test_outputs.py -rA --ctrf=/logs/verifier/ctrf.json
-status=$?
+if command -v pytest >/dev/null 2>&1; then
+  pytest /tests/test_outputs.py -rA --ctrf=/logs/verifier/ctrf.json
+  status=$?
+else
+  status=1
+fi
 
 if [ $status -eq 0 ]; then
   echo 1 > /logs/verifier/reward.txt
