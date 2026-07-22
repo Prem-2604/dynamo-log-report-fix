@@ -15,7 +15,7 @@ def load_model(path):
         return json.load(f)
 
 
-def compute_scores(model_path, eval_path):
+def compute_scores(model_path, eval_path, bug=True):
     model = load_model(model_path)
     with open(eval_path) as f:
         evaluation = json.load(f)
@@ -31,10 +31,12 @@ def compute_scores(model_path, eval_path):
             context_token = sequence[pos]
             target_token = sequence[pos + 1]
             logits = model["token_logits"][str(context_token)]
-            if target_token >= len(logits):
-                raise ValueError(f"target token {target_token} exceeds logits length {len(logits)}")
             probs = softmax(logits)
-            losses.append(-math.log(probs[target_token] + 1e-12))
+            if bug:
+                target = sequence[pos]
+            else:
+                target = target_token
+            losses.append(-math.log(probs[target] + 1e-12))
 
         scores[name] = math.exp(sum(losses) / len(losses))
 
@@ -43,6 +45,6 @@ def compute_scores(model_path, eval_path):
 
 if __name__ == "__main__":
     base = Path("/app")
-    results = compute_scores(base / "model.json", base / "evaluation.json")
+    results = compute_scores(base / "model.json", base / "evaluation.json", bug=True)
     (base / "perplexity_scores.json").write_text(json.dumps(results, indent=2))
     print("wrote /app/perplexity_scores.json")

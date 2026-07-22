@@ -1,34 +1,21 @@
 import json
 from pathlib import Path
 
-REPORT_PATH = Path("/app/report.json")
+REPORT_PATH = Path("/app/perplexity_scores.json")
 
 
 def _load_report():
-    assert REPORT_PATH.exists(), "no report.json found at /app/report.json"
+    assert REPORT_PATH.exists(), "no perplexity_scores.json found at /app/perplexity_scores.json"
     with open(REPORT_PATH) as f:
         return json.load(f)
 
 
-def test_report_is_valid_json():
-    """Verifies instruction.md criterion 1: /app/report.json exists and contains valid JSON."""
+def test_perplexity_scores():
     report = _load_report()
-    assert isinstance(report, dict)
-
-
-def test_total_requests():
-    """Verifies instruction.md criterion 2: total_requests equals the number of lines in the log."""
-    report = _load_report()
-    assert report.get("total_requests") == 6, f"expected total_requests=6, got {report.get('total_requests')}"
-
-
-def test_unique_ips():
-    """Verifies instruction.md criterion 3: unique_ips equals the number of distinct client IPs in the log."""
-    report = _load_report()
-    assert report.get("unique_ips") == 3, f"expected unique_ips=3, got {report.get('unique_ips')}"
-
-
-def test_top_path():
-    """Verifies instruction.md criterion 4: top_path equals the most frequently requested path."""
-    report = _load_report()
-    assert report.get("top_path") == "/index.html", f"expected top_path='/index.html', got {report.get('top_path')}"
+    expected = {
+        "seq_a": 4.780921031756429,
+        "seq_b": 4.547752761622072,
+        "seq_c": 5.336582012318803,
+        "seq_d": 4.828739089166271,
+    }
+    assert report == expected, f"expected {expected}, got {report}"

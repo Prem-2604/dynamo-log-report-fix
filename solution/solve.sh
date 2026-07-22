@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euo pipefail
 
-python3 /solution/solve.py
+python3 /app/solution/solve.py
